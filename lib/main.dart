@@ -50,37 +50,40 @@ class _HomePageState extends State<HomePage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: () {},
-              icon: Image.asset("assets/images/logo/glyder_logo.png"),
+            MouseButtonWidget.asset(
+              path: "assets/images/logo/glyder_logo.png",
             ),
             buildAppbarSeparator(),
-            const MouseButtonWidget.icon(
-              icon: Icons.home_rounded,
-            ),
-            buildAppbarSeparator(),
-            const MouseButtonWidget.text(
+            MouseButtonWidget.text(
               text: "Home",
             ),
             buildAppbarSeparator(),
-            const MouseButtonWidget.text(
+            MouseButtonWidget.text(
               text: "Products",
             ),
             buildAppbarSeparator(),
-            const MouseButtonWidget.text(
+            MouseButtonWidget.text(
               text: "Contact us",
             ),
             buildAppbarSeparator(),
-            const MouseButtonWidget.text(
+            MouseButtonWidget.text(
               text: "Who are we?",
             ),
           ],
         ),
         centerTitle: true,
       ),
-      body: const Center(
+      body: Center(
         child: SingleChildScrollView(
-          child: Text("Welcome true believers and newcomers alike"),
+          child: Column(
+            children: [
+              const Text("Welcome true believers and newcomers alike"),
+              Image.asset(
+                "assets/images/logo/glyder_logo.png",
+                color: Colors.red,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -2,44 +2,59 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class MouseButtonWidget extends StatelessWidget {
-  final Color unFocusedTextColor;
-  final Color focusedTextColor;
   final Widget child;
 
-  const MouseButtonWidget({
+  MouseButtonWidget.text({
     Key? key,
-    this.unFocusedTextColor = Colors.grey,
-    this.focusedTextColor = Colors.white,required this.child,}) : super(key: key);
-
-  const MouseButtonWidget.text({
-    Key? key,
-    this.unFocusedTextColor = Colors.grey,
-    this.focusedTextColor = Colors.white,
+    Color unFocusedColor = Colors.grey,
+    Color focusedColor = Colors.white,
     required String text,
-    this.child = const _MouseTextButtonWidget(
-      text: text,
-    ),
-  }) : super(key: key);
+  })  : child = _MouseTextButtonWidget(
+          focusedColor: focusedColor,
+          unFocusedColor: unFocusedColor,
+          text: text,
+        ),
+        super(key: key);
 
-  const MouseButtonWidget.icon({
+  MouseButtonWidget.icon({
     Key? key,
-    this.unFocusedTextColor = Colors.grey,
-    this.focusedTextColor = Colors.white,
-    this.text,
-    required this.icon,
-  }) : super(key: key);
+    Color unFocusedColor = Colors.grey,
+    Color focusedColor = Colors.white,
+    required IconData icon,
+  })  : child = _MouseIconButtonWidget(
+          focusedColor: focusedColor,
+          unFocusedColor: unFocusedColor,
+          icon: icon,
+        ),
+        super(key: key);
+
+  MouseButtonWidget.asset({
+    Key? key,
+    Color? unFocusedColor,
+    Color? focusedColor,
+    required String path,
+  })  : child = _MouseImageButtonWidget(
+          focusedColor: focusedColor,
+          unFocusedColor: unFocusedColor,
+          path: path,
+        ),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return child;
   }
 }
 
 class _MouseTextButtonWidget extends StatefulWidget {
+  final Color unFocusedColor;
+  final Color focusedColor;
   final String text;
 
   const _MouseTextButtonWidget({
     Key? key,
+    this.unFocusedColor = Colors.grey,
+    this.focusedColor = Colors.white,
     required this.text,
   }) : super(key: key);
 
@@ -70,97 +85,110 @@ class _MouseTextButtonWidgetState extends State<_MouseTextButtonWidget> {
       cursor: SystemMouseCursors.click,
       child: GestureDetector(
         onTap: () {},
-        child: Stack(
-          children: [
-            if (widget.icon != null)
-              Icon(
-                widget.icon,
-                color: _focused ? widget.focusedTextColor : widget.unFocusedTextColor,
-              ),
-            if (widget.text != null)
-              Text(
-                widget.text!,
-                style: TextStyle(
-                  color: _focused ? widget.focusedTextColor : widget.unFocusedTextColor,
-                  fontSize: 16.0,
-                ),
-              ),
-          ],
+        child: Text(
+          widget.text,
+          style: TextStyle(
+            color: _focused ? widget.focusedColor : widget.unFocusedColor,
+            fontSize: 16.0,
+          ),
         ),
       ),
     );
   }
 }
 
-// class MouseButtonWidget extends StatefulWidget {
-//   final Color unFocusedTextColor;
-//   final Color focusedTextColor;
-//   final String? text;
-//   final IconData? icon;
+class _MouseIconButtonWidget extends StatefulWidget {
+  final Color unFocusedColor;
+  final Color focusedColor;
+  final IconData icon;
 
-//   const MouseButtonWidget.text({
-//     Key? key,
-//     this.unFocusedTextColor = Colors.grey,
-//     this.focusedTextColor = Colors.white,
-//     required this.text,
-//     this.icon,
-//   })  : assert((text != null) != (icon != null)),
-//         super(key: key);
+  const _MouseIconButtonWidget({
+    Key? key,
+    this.unFocusedColor = Colors.grey,
+    this.focusedColor = Colors.white,
+    required this.icon,
+  }) : super(key: key);
 
-//   const MouseButtonWidget.icon({
-//     Key? key,
-//     this.unFocusedTextColor = Colors.grey,
-//     this.focusedTextColor = Colors.white,
-//     this.text,
-//     required this.icon,
-//   })  : assert((text != null) != (icon != null)),
-//         super(key: key);
+  @override
+  State<_MouseIconButtonWidget> createState() => _MouseIconButtonWidgetState();
+}
 
-//   @override
-//   State<MouseButtonWidget> createState() => _MouseButtonWidgetState();
-// }
+class _MouseIconButtonWidgetState extends State<_MouseIconButtonWidget> {
+  bool _focused = false;
 
-// class _MouseButtonWidgetState extends State<MouseButtonWidget> {
-//   bool _focused = false;
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (PointerEnterEvent enterEvent) {
+        if (!_focused) {
+          setState(() {
+            _focused = true;
+          });
+        }
+      },
+      onExit: (PointerExitEvent exitEvent) {
+        if (_focused) {
+          setState(() {
+            _focused = false;
+          });
+        }
+      },
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {},
+        child: Icon(
+          widget.icon,
+          color: _focused ? widget.focusedColor : widget.unFocusedColor,
+        ),
+      ),
+    );
+  }
+}
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return MouseRegion(
-//       onEnter: (PointerEnterEvent enterEvent) {
-//         if (!_focused) {
-//           setState(() {
-//             _focused = true;
-//           });
-//         }
-//       },
-//       onExit: (PointerExitEvent exitEvent) {
-//         if (_focused) {
-//           setState(() {
-//             _focused = false;
-//           });
-//         }
-//       },
-//       cursor: SystemMouseCursors.click,
-//       child: GestureDetector(
-//         onTap: () {},
-//         child: Stack(
-//           children: [
-//             if (widget.icon != null)
-//               Icon(
-//                 widget.icon,
-//                 color: _focused ? widget.focusedTextColor : widget.unFocusedTextColor,
-//               ),
-//             if (widget.text != null)
-//               Text(
-//                 widget.text!,
-//                 style: TextStyle(
-//                   color: _focused ? widget.focusedTextColor : widget.unFocusedTextColor,
-//                   fontSize: 16.0,
-//                 ),
-//               ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+class _MouseImageButtonWidget extends StatefulWidget {
+  final Color? unFocusedColor;
+  final Color? focusedColor;
+  final String path;
+
+  const _MouseImageButtonWidget({
+    Key? key,
+    this.unFocusedColor,
+    this.focusedColor,
+    required this.path,
+  }) : super(key: key);
+
+  @override
+  State<_MouseImageButtonWidget> createState() => _MouseImageButtonWidgetState();
+}
+
+class _MouseImageButtonWidgetState extends State<_MouseImageButtonWidget> {
+  bool _focused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return MouseRegion(
+      onEnter: (PointerEnterEvent enterEvent) {
+        if (!_focused) {
+          setState(() {
+            _focused = true;
+          });
+        }
+      },
+      onExit: (PointerExitEvent exitEvent) {
+        if (_focused) {
+          setState(() {
+            _focused = false;
+          });
+        }
+      },
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: () {},
+        child: Image.asset(
+          widget.path,
+          color: _focused ? widget.focusedColor : widget.unFocusedColor,
+        ),
+      ),
+    );
+  }
+}
